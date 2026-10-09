@@ -31,7 +31,9 @@ async function withRetry<T>(operation: () => Promise<T>, retries = 3): Promise<T
 }
 
 function isCapacitorAvailable(): boolean {
-  return Boolean((window as typeof window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.());
+  return Boolean(
+    (window as typeof window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor?.isNativePlatform?.(),
+  );
 }
 
 export async function readSecure<T>(key: string): Promise<T | null> {
@@ -41,11 +43,22 @@ export async function readSecure<T>(key: string): Promise<T | null> {
       if (!result.value) {
         return null;
       }
-      return JSON.parse(result.value) as T;
+
+      try {
+        return JSON.parse(result.value) as T;
+      } catch {
+        return null;
+      }
     }
 
     const value = await store.getItem<string>(key);
-    return value ? (JSON.parse(value) as T) : null;
+    if (!value) return null;
+
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return null;
+    }
   });
 }
 
@@ -81,10 +94,10 @@ export async function saveTransactional<T>(key: string, value: T): Promise<void>
   });
 }
 
-export async function readAppState<T>(): Promise<T | null> {
-  return readSecure<T>(STORAGE_KEY);
+export async function readAppState<T>(key = STORAGE_KEY): Promise<T | null> {
+  return readSecure<T>(key);
 }
 
-export async function writeAppState<T>(state: T): Promise<void> {
-  await saveTransactional(STORAGE_KEY, state);
+export async function writeAppState<T>(state: T, key = STORAGE_KEY): Promise<void> {
+  await saveTransactional(key, state);
 }
