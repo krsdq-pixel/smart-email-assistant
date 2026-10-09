@@ -1,15 +1,15 @@
 export async function withRetry<T>(fn: () => Promise<T>, retries = 3): Promise<T> {
-  let attempt = 0;
+  let tries = 0;
 
-  while (attempt < retries) {
+  while (tries < retries) {
     try {
       return await fn();
     } catch (error) {
-      attempt += 1;
-      if (attempt >= retries) {
+      tries += 1;
+      if (tries >= retries) {
         throw error;
       }
-      await new Promise((resolve) => setTimeout(resolve, 250 * attempt));
+      await new Promise((resolve) => window.setTimeout(resolve, 200 * tries));
     }
   }
 

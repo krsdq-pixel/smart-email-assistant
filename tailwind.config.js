@@ -4,15 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        deep: '#0B0F19',
+        charcoal: '#0B0F19',
         cyan: '#00E5FF',
         orange: '#FF9100',
       },
       boxShadow: {
-        neon: '0 0 30px rgba(0, 229, 255, 0.18)',
-      },
-      animation: {
-        pulseSoft: 'pulse 2.5s ease-in-out infinite',
+        neon: '0 0 30px rgba(0, 229, 255, 0.20)',
       },
     },
   },
